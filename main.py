@@ -33,5 +33,16 @@ def usuario(connection: socket.socket):
                 print(f'\n{msg_dumped["mensagem"]}')
                 
                 msg_a_enviar = f'\n{msg_dumped["mensagem"]}'
+                transmitir(msg_a_enviar, connection)
+            else:
+                remover_conexao(connection)
+                break
+
+        except Exception as e:
+            print(f'Ocorreu um erro: {e}')
+            remover_conexao(connection)
+            break
 
 
+def transmitir(mensagem: connection: socket.socket) -> None:
+    for: conexao_cliente            
