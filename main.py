@@ -28,6 +28,10 @@ def usuario(connection: socket.socket):
         try:
             msg = connection.recv(1024)
             msg_dumped = json.loads(msg)
-            
+
+            if msg:
+                print(f'\n{msg_dumped["mensagem"]}')
+                
+                msg_a_enviar = f'\n{msg_dumped["mensagem"]}'
 
 
