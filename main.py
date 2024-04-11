@@ -12,4 +12,4 @@ def receber_mensagem(connection: socket.socket):
             if msg:
                 print(msg.decode())
             else:
-                connection.close
+                connection.closes
