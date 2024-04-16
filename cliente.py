@@ -61,11 +61,9 @@ def remover_conexao(conn: socket.socket) -> None:
         connections.remove(conn)
 
 
-op = int(input("Digite a opção desejada:\n"
-               "1 - Usuario\n"
-               "2 - Servidor\n"
+op = int(input("Ação desejada:\n"
+               "1 - Criar servidor\n"
                "0 - Fechar\n"))
-
 
 if op == 1:
     IP_SERVIDOR = str(input("Digite o ip do servidor: "))
@@ -104,30 +102,6 @@ if op == 1:
 
     except Exception as e:
         print(f'Ocorreu um erro\n {e}')
-        socket_instance.close()
-
-if op == 2:
-    LISTENING_PORT = int(input("Digite a porta do servidor: "))
-
-    try:
-        socket_instance = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        socket_instance.bind(('', LISTENING_PORT))
-        socket_instance.listen((4))
-
-        print('Servidor online!')
-
-        while True:
-            socket_connection, address = socket_instance.accept()
-            connections.append(socket_connection)
-            threading.Thread(target=lidar_usuario, args=[socket_connection, address]).start()
-
-    except Exception as e:
-        print(f'Ocorreu um erro\n {e}')
-    finally:
-        if len(connections) > 0:
-            for conn in connections:
-                remover_conexao(conn)
-
         socket_instance.close()
 
 if op == 0:
