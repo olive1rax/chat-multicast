@@ -19,50 +19,11 @@ def receber_mensagem(connection: socket.socket): # Função para receber e trata
             print(f'Ocorreu um erro: {e}') 
             connection.close()
             break
-
-connections = [] # Variável para salvar as conexões dos clientes.
-
-
-def lidar_usuario(connection: socket.socket, address: str) -> None:
-    while True:
-        try:
-            msg = connection.recv(1024)
-            msg_dumped = json.loads(msg)
-
-            if msg:
-                print(f'\n{msg_dumped["mensagem"]}')
-                
-                msg_a_enviar = f'\n{msg_dumped["mensagem"]}'
-                transmitir(msg_a_enviar, connection)
-            else:
-                remover_conexao(connection)
-                break
-
-        except Exception as e:
-            print(f'Ocorreu um erro: {e}')
-            remover_conexao(connection)
-            break
-
-
-def transmitir(mensagem: str, connection: socket.socket) -> None:
-    for conexao_cliente in connections:
-        if conexao_cliente != connection:
-            try:
-                conexao_cliente.send(mensagem.encode())
-                
-            except Exception as e:
-                print(f'Ocorreu um erro: {e}')
-                remover_conexao(conexao_cliente)
-
-
-def remover_conexao(conn: socket.socket) -> None:
-    if conn in connections:
-        conn.close()
-        connections.remove(conn)
+        
 
 
 op = int(input("Ação desejada:\n"
-               "1 - Criar servidor\n"
+               "1 - Entrar em um servidor\n"
                "0 - Fechar\n"))
 
 if op == 1:

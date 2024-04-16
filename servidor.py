@@ -5,21 +5,6 @@ import time
 from datetime import date
 
 
-def receber_mensagem(connection: socket.socket): # Função para receber e tratar as mensagens.
-    while True:
-        try:
-            msg = connection.recv(1024)
-            if msg:
-                print(msg.decode())
-            else:
-                connection.close()
-                break
-
-        except Exception as e:
-            print(f'Ocorreu um erro: {e}') 
-            connection.close()
-            break
-
 connections = [] # Variável para salvar as conexões dos clientes.
 
 
@@ -27,12 +12,12 @@ def lidar_usuario(connection: socket.socket, address: str) -> None:
     while True:
         try:
             msg = connection.recv(1024)
-            msg_dumped = json.loads(msg)
+            msg_dumped = json.load(msg)
 
             if msg:
                 print(f'\n{msg_dumped["mensagem"]}')
                 
-                msg_a_enviar = f'\n{msg_dumped["mensagem"]}'
+                msg_a_enviar = f'\n{msg_dumped ["mensagem"]}'
                 transmitir(msg_a_enviar, connection)
             else:
                 remover_conexao(connection)
