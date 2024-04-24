@@ -30,17 +30,18 @@ def receber_mensagem(connection: socket.socket):
             connection.close()
             break
 
-# Lista de servidores disponíveis
 SERVIDORES = [
-    {"ip": "ip_servidor_1", "porta": porta_servidor_1},
-    {"ip": "ip_servidor_2", "porta": porta_servidor_2},
-    # Adicione mais servidores conforme necessário
+    {"ip": "127.0.0.1", "porta": 2205},
+    {"ip": "127.0.0.1", "porta": 2206},
+    {"ip": "127.0.0.1", "porta": 2207},
+    {"ip": "127.0.0.1", "porta": 2208},
+    {"ip": "127.0.0.1", "porta": 2209}
+    
 ]
 
 def conectar_servidor(op_servidor, usuario):
     global socket_instance
     try:
-        # Antes de se conectar a um novo servidor, feche a conexão com o servidor atual (se houver)
         fechar_conexao()
 
         servidor_escolhido = SERVIDORES[op_servidor - 1]
@@ -50,7 +51,6 @@ def conectar_servidor(op_servidor, usuario):
 
         print('Entrou no chat!')
 
-        # Envie o nome de usuário para o servidor
         payload = {"usuario": usuario, "mensagem": "Entrou no servidor"}
         socket_instance.send(json.dumps(payload).encode())
 
@@ -71,7 +71,6 @@ if op == 1:
 
     op_servidor = int(input("Escolha o servidor desejado: "))
 
-    # Verifique se o cliente já está conectado ao servidor escolhido
     if socket_instance and SERVIDORES[op_servidor - 1]['ip'] == socket_instance.getpeername()[0]:
         print("Você já está conectado a este servidor!")
     else:
