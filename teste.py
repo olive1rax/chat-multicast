@@ -31,13 +31,11 @@ def receber_mensagem(connection: socket.socket):
             break
 
 SERVIDORES = [
-    {"ip": "127.0.0.1", "porta": 2205},
-    {"ip": "127.0.0.1", "porta": 2206},
-    {"ip": "127.0.0.1", "porta": 2207},
-    {"ip": "127.0.0.1", "porta": 2208},
-    {"ip": "127.0.0.1", "porta": 2209}
-    
-]
+    {"nome": "Alto Tietê", "ip": "127.0.0.1", "porta": 8001},
+    {"nome": "Médio Tietê","ip": "127.0.0.1", "porta": 8002},
+    {"nome": "Tietê Interiorano","ip": "127.0.0.1", "porta": 8003},
+    {"nome": "Baixo Tietê","ip": "127.0.0.1", "porta": 8004}
+    ]
 
 def conectar_servidor(op_servidor, usuario):
     global socket_instance
@@ -67,7 +65,7 @@ if op == 1:
 
     print("Servidores disponíveis:")
     for i, servidor in enumerate(SERVIDORES):
-        print(f"{i+1} - {servidor['ip']}:{servidor['porta']}")
+        print(f"{i+1} - {servidor['nome']}")
 
     op_servidor = int(input("Escolha o servidor desejado: "))
 
