@@ -1,5 +1,6 @@
 import customtkinter as ctk  # Importando a biblioteca
-
+import tkinter
+from PIL import Image
 janela = ctk.CTk()  # Criando janela
 
 # Configurando janela
@@ -40,7 +41,7 @@ janela.resizable(width=False, height=False)
 
 #btnDialog = ctk.CTkButton(janela, text="Abrir Dialog", command=abrirDialog)
 #btnDialog.pack()
-
+'''
 trechosctk = ctk.StringVar(value="Escolha")
 
 def trechos(escolha):
@@ -49,9 +50,51 @@ def trechos(escolha):
 label = ctk.CTkLabel(janela, text="Trechos:", font=("arial-bold", 20)).pack()
 
 trechos = ctk.CTkOptionMenu(janela, values=["Alto Tietê", "Médio Tietê", "Baixo Tietê", "Tietê Inferior"], variable=trechosctk, command=trechos)
-
-
 trechos.pack(pady=50)
+'''
+
+img = ctk.CTkImage(light_image=Image.open("./img/send.png"), dark_image=Image.open("./img/send.png"),size=(20, 20))
+
+def enviar():
+    t = entry.get()
+    label11.configure(text=str(t))
+    entry.delete(0, tkinter.END)
+    pass
+
+label11 = ctk.CTkLabel(janela,
+                       width=100,
+                       height=100,
+                       text_color="red",
+                       font=("arial bold", 20))
+
+label11.pack(pady=10)
+
+entry = ctk.CTkEntry(janela, 
+                    width=100,
+                    height=10,
+                    placeholder_text="DIGITE")
+entry.pack(pady=10)
+
+btn11 = ctk.CTkButton(janela, width=50, height=50, text="Enviar", command=enviar, image=img)
+btn11.pack(pady=50)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
