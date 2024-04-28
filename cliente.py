@@ -2,6 +2,7 @@ import socket
 import threading
 import json
 import time
+import os
 from datetime import date
 
 # Variável global para manter a conexão com o servidor
@@ -47,9 +48,9 @@ def conectar_servidor(op_servidor, usuario):
         socket_instance.connect((servidor_escolhido['ip'], servidor_escolhido['porta']))
         threading.Thread(target=receber_mensagem, args=[socket_instance]).start()
 
-        print('Entrou no chat!')
+        print('Você entrou no chat!')
 
-        payload = {"usuario": usuario, "mensagem": "Entrou no servidor"}
+        payload = {"log": "join", "usuario": usuario, "mensagem": "entrou no servidor"}
         socket_instance.send(json.dumps(payload).encode())
 
     except Exception as e:
@@ -91,6 +92,7 @@ if op == 1:
             print("Saindo da sessão...")
             fechar_conexao()
             break
+        
         elif msg == '/trocar servidor':
             print("Trocando de servidor...")
             op_servidor = int(input("Escolha o novo servidor desejado: "))
@@ -98,7 +100,7 @@ if op == 1:
             continue
 
         payload = json.dumps(payload)
-
+        # print("Mensagem enviada:", payload) # Ver STRING enviada
         socket_instance.send(bytes(payload, 'utf-8'))
 
     socket_instance.close()

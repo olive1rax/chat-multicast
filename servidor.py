@@ -13,15 +13,22 @@ def lidar_usuario(connection: socket.socket, address: str) -> None:
         try:
             msg = connection.recv(1024)
             if msg:
+                # print("Mensagem recebida:", msg) #Log para testes
                 msg_dumped = json.loads(msg)
-                print(f'\n{msg_dumped["mensagem"]}')
-
-                if msg_dumped["mensagem"] == "fechar servidor":
+                # print("Mensagem decodificada:", msg_dumped) #Log para testes
+                usuario = msg_dumped.get("usuario", "Usuário Desconhecido")
+                mensagem = msg_dumped.get("mensagem", "Mensagem Não Encontrada")
+                if msg_dumped.get("log") == "join":
+                    print(f'{usuario} {mensagem}')
+                # print("Usuário:", usuario) #Log para testes
+                # print("Mensagem:", mensagem) #Log para testes
+                else: print(f'{usuario}: {mensagem}')
+                if mensagem == "fechar servidor":
                     print("Fechando servidor...")
                     fechar_servidor()
                     break
 
-                transmitir(msg.decode(), connection)
+                transmitir(f'{usuario}: {mensagem}', connection)
             else:
                 remover_conexao(connection)
                 break
@@ -29,7 +36,6 @@ def lidar_usuario(connection: socket.socket, address: str) -> None:
             print(f'Ocorreu um erro: {e}')
             remover_conexao(connection)
             break
-
 
 def transmitir(mensagem: str, connection: socket.socket) -> None:
     for conexao_cliente in connections:
