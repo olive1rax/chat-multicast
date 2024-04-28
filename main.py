@@ -2,7 +2,6 @@ import customtkinter as ctk  # Importando a biblioteca
 import tkinter
 from PIL import Image
 
-
 #Função para centralizar janela
 def CenterWindowToDisplay(Screen: ctk, width: int, height: int, scale_factor: float = 1.0):
     screen_width = Screen.winfo_screenwidth()
@@ -13,22 +12,23 @@ def CenterWindowToDisplay(Screen: ctk, width: int, height: int, scale_factor: fl
     
 class main():
 
-    def app(usuario):
+    def app():
 
-        print(usuario)
+        print(usuario.get())
         # Configurando Janela do App
         jnlApp = ctk.CTkToplevel(jnlLogin)
         jnlApp.title("Equipe de Inspeção - Rio Tietê")
-        jnlApp.geometry(CenterWindowToDisplay(jnlApp, 500, 500, jnlApp._get_window_scaling()))
+        jnlApp.geometry(CenterWindowToDisplay(jnlApp, 900, 500, jnlApp._get_window_scaling()))
         jnlApp.resizable(width=False, height=False)
 
         # Frame
-        #frmMenu = ctk.CTkFrame(jnlApp, width=780, height=380, fg_color="transparent", border_width=3, border_color="teal", corner_radius=15).place(x=10, y=10)
+        frmMenu = ctk.CTkFrame(jnlApp, width=300, height=480, fg_color="transparent", border_width=3, border_color="teal", corner_radius=10).place(x=10, y=10)
+
 
         # Imagem SP
-        #imgGov = ctk.CTkImage(light_image=Image.open(".\img\gov-sp.png"), size=(300, 250))
-        #lblImgGov = ctk.CTkLabel(frmLogin, text=None, image=imgGov)
-        #lblImgGov.pack(side=ctk.TOP, pady=20)
+        imgGov = ctk.CTkImage(light_image=Image.open(".\img\gov-sp.png"), size=(300, 250))
+        lblImgGov = ctk.CTkLabel(jnlApp, text=None, image=imgGov)
+        lblImgGov.pack(side=ctk.TOP)
 
         # Label Usuário
         #lblUsuario = ctk.CTkLabel(frmLogin, text="Usuário:")
@@ -58,6 +58,9 @@ class main():
     jnlLogin.geometry(CenterWindowToDisplay(jnlLogin, 400, 400, jnlLogin._get_window_scaling()))
     jnlLogin.resizable(width=False, height=False)
 
+    global usuario
+    usuario = ctk.StringVar()
+
     # Frame
     frmLogin = ctk.CTkFrame(jnlLogin, width=380, height=380, fg_color="transparent", border_width=3, border_color="teal", corner_radius=15).place(x=10, y=10)
 
@@ -74,15 +77,15 @@ class main():
     txtUsuario = ctk.CTkEntry(frmLogin,
                         width=300,
                         placeholder_text=None,
-                        corner_radius=15)
-
+                        corner_radius=15,
+                        textvariable=usuario)
     txtUsuario.pack(side=ctk.TOP)
 
     # Botão Acessar
-    btnAcessar = ctk.CTkButton(frmLogin, width=300, text="Acessar", command=app(txtUsuario.get()), corner_radius=15)
+    btnAcessar = ctk.CTkButton(frmLogin, width=300, text="Acessar", command=app, corner_radius=15)
     btnAcessar.pack(pady=10)
 
     
 
 #Executando janela
-jnlLogin.mainloop()
+    jnlLogin.mainloop()
