@@ -1,21 +1,22 @@
 import socket
 import threading
 import json
-import time
 import os
 import tkinter as tk
 from tkinter import filedialog
 from datetime import date
 
-# Variável global para manter a conexão com o servidor
+# Variáveis globais para manter a conexão com o servidor e a caixa de chat
 socket_instance = None
+caixa_chat = None
+entrada_mensagem = None
 
 SERVIDORES = [
     {"nome": "Alto Tietê", "ip": "127.0.0.1", "porta": 8001},
     {"nome": "Médio Tietê", "ip": "127.0.0.1", "porta": 8002},
     {"nome": "Tietê Interiorano", "ip": "127.0.0.1", "porta": 8003},
     {"nome": "Baixo Tietê", "ip": "127.0.0.1", "porta": 8004}
-    ]
+]
 
 def fechar_conexao():
     global socket_instance
@@ -26,18 +27,17 @@ def fechar_conexao():
             print(f'Erro ao fechar a conexão: {e}')
 
 def receber_mensagem(connection: socket.socket):
+    global caixa_chat
     while True:
         try:
             msg = connection.recv(1024)
             if msg:
-                print(msg.decode())
-            else:
-                connection.close()
-                break
-
+                caixa_chat.config(state=tk.NORMAL)
+                caixa_chat.insert(tk.END, msg.decode() + "\n")
+                caixa_chat.config(state=tk.DISABLED)
         except Exception as e:
             print(f'Ocorreu um erro: {e}') 
-            connection.close()
+            fechar_conexao()
             break
 
 def selecionar_arquivo():
@@ -45,9 +45,11 @@ def selecionar_arquivo():
     root.withdraw()  # Oculta a janela principal
 
     caminho_arquivo = filedialog.askopenfilename()
+    root.destroy()  # Fecha a janela depois de selecionar o arquivo
     return caminho_arquivo
 
 def enviar_arquivo():
+    global socket_instance
     caminho_arquivo = selecionar_arquivo()
 
     if caminho_arquivo:
@@ -61,14 +63,6 @@ def enviar_arquivo():
             socket_instance.send(json.dumps(payload).encode())
     else:
         print("Nenhum arquivo selecionado.")
-        if os.path.exists(caminho_arquivo):
-            with open(caminho_arquivo, "rb") as file:
-                bytes_arquivo = file.read()
-                payload = {
-                    "tipo": tipo_arquivo,
-                    "nome": os.path.basename(caminho_arquivo),
-                    "conteudo_arquivo": bytes_arquivo
-                }
 
 def conectar_servidor(op_servidor, usuario):
     global socket_instance
@@ -89,6 +83,47 @@ def conectar_servidor(op_servidor, usuario):
         print(f'Ocorreu um erro\n {e}')
         socket_instance.close()
 
+def enviar_mensagem():
+    global socket_instance
+    mensagem = entrada_mensagem.get()
+    if mensagem:
+        if mensagem == 'arquivo':
+            enviar_arquivo()
+        elif mensagem == '/trocar servidor':
+            op_servidor = int(input("Escolha o novo servidor desejado: "))
+            conectar_servidor(op_servidor, "Eu")
+        elif mensagem == 'fechar conexao':
+            fechar_conexao()
+        else:
+            payload = {
+                "usuario": "Eu",
+                "mensagem": mensagem,
+                "hora": "",
+                "data": ""
+            }
+            socket_instance.send(json.dumps(payload).encode())
+            entrada_mensagem.delete(0, tk.END)
+
+def criar_interface_grafica():
+    global caixa_chat, entrada_mensagem
+    root = tk.Tk()
+    root.title("Chat")
+
+    # Caixa de chat
+    caixa_chat = tk.Text(root, height=20, width=50)
+    caixa_chat.config(state=tk.DISABLED)
+    caixa_chat.pack(padx=10, pady=10)
+
+    # Entrada de mensagem
+    entrada_mensagem = tk.Entry(root, width=50)
+    entrada_mensagem.pack(padx=10, pady=(0, 10))
+
+    # Botão de enviar
+    botao_enviar = tk.Button(root, text="Enviar", command=enviar_mensagem)
+    botao_enviar.pack(padx=10, pady=(0, 10))
+
+    root.mainloop()
+
 op = int(input("Ação desejada:\n"
                "1 - Entrar em um servidor\n"
                "0 - Fechar\n"))
@@ -107,39 +142,7 @@ if op == 1:
     else:
         conectar_servidor(op_servidor, usuario)
 
-    while True:
-        msg = str(input("Digite a mensagem: "))
-        time_raw = time.localtime()
-        time_value = time.strftime("%H:%M:%S", time_raw)
-        today = date.today()
-        date_value = today.strftime("%d/%m/%y")
-        payload = {
-            "usuario": usuario,
-            "mensagem": msg,
-            "hora": time_value,
-            "data": date_value,
-        }
-
-        if msg == 'fechar':
-            print("Saindo da sessão...")
-            fechar_conexao()
-            break
-
-        elif msg == 'arquivo':
-            selecionar_arquivo()
-            break
-
-        elif msg == '/trocar servidor':
-            print("Trocando de servidor...")
-            op_servidor = int(input("Escolha o novo servidor desejado: "))
-            conectar_servidor(op_servidor, usuario)
-            continue
-
-        payload = json.dumps(payload)
-        # print("Mensagem enviada:", payload) # Ver STRING enviada
-        socket_instance.send(bytes(payload, 'utf-8'))
-
-    socket_instance.close()
+    criar_interface_grafica()
 
 elif op == 0:
     print("Fechando...")
