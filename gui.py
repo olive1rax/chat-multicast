@@ -1,110 +1,105 @@
 import customtkinter as ctk  # Importando a biblioteca
 import tkinter
+from tkinter import messagebox
 from PIL import Image
-janela = ctk.CTk()  # Criando janela
 
-# Configurando janela
-janela._set_appearance_mode("light")
+#Função para centralizar janela
+def CenterWindowToDisplay(Screen: ctk, width: int, height: int, scale_factor: float = 1.0):
+    screen_width = Screen.winfo_screenwidth()
+    screen_height = Screen.winfo_screenheight()
+    x = int(((screen_width/2) - (width/2)) * scale_factor)
+    y = int(((screen_height/2) - (height/1.5)) * scale_factor)
+    return f"{width}x{height}+{x}+{y}"
+
+#Acessar tela do app
+def acessar():
+
+    #Verifica se foi preenchido o usuário
+    if (txtUsuario.get() == ""):
+        messagebox.showerror("Erro", "Informe seu usuário!")
+        txtUsuario.focus()
+        return
+
+    #Minimiza tela de login
+    jnlLogin.withdraw()
+
+    # Configurando Janela do App
+    jnlApp = ctk.CTkToplevel()
+    jnlApp.title("Equipe de Inspeção - Rio Tietê")
+    jnlApp.geometry(CenterWindowToDisplay(jnlApp, 900, 500, jnlApp._get_window_scaling()))
+    jnlApp.resizable(width=False, height=False)
+
+    #Menu de chats
+    frmMenu = ctk.CTkFrame(jnlApp, width=300, height=480, fg_color="transparent", border_width=3, border_color="teal", corner_radius=10)
+    frmMenu.place(x=10,y=10)
+
+    lblTrechos = ctk.CTkLabel(frmMenu, font=("arial", 20, "bold"), text="Trechos:")
+    lblTrechos.grid(row=0, column=0, padx=10, pady=10)
+
+    btnAlto = ctk.CTkButton(frmMenu, width=280, height=65, text="Alto Tietê", border_width=2, corner_radius=10, font=("arial-bold", 20, "bold"))
+    btnAlto.grid(row=1, column=0, padx=10, pady=10)
+
+    btnMedio = ctk.CTkButton(frmMenu, width=280, height=65, text="Médio Tietê", border_width=2, corner_radius=10, font=("arial-bold", 20, 'bold'))
+    btnMedio.grid(row=2, column=0, padx=10, pady=10)
+
+    btnInterioriano = ctk.CTkButton(frmMenu, width=280, height=65, text="Tietê Interior", border_width=2, corner_radius=10, font=("arial-bold", 20, 'bold'))
+    btnInterioriano.grid(row=3, column=0, padx=10, pady=10)
+
+    btnBaixo = ctk.CTkButton(frmMenu, width=280, height=65, text="Baixo Tietê", border_width=2, corner_radius=10, font=("arial-bold", 20, 'bold'))
+    btnBaixo.grid(row=4, column=0, padx=10, pady=10)
+
+    #Usuário
+    frmUsuario = ctk.CTkFrame(frmMenu, width=280, height=70, fg_color="transparent", bg_color="#d3d3d3", border_width=2, border_color="teal", corner_radius=10)
+    frmUsuario.grid(row = 5, column=0, padx=10, pady=10, sticky='w')
+
+    lblUser = ctk.CTkLabel(frmUsuario, width=260, height=50, text="Bem vindo(a), " + txtUsuario.get() + "!", font=("arial",20, "bold"), fg_color="#d3d3d3")
+    lblUser.grid(row=0,column=0, sticky="nsew", padx=10, pady=10)
+
+    #Frame de chats
+    frmChats = ctk.CTkFrame(jnlApp, width=570, height=478, fg_color="transparent", border_width=3, border_color="teal", corner_radius=10)
+    frmChats.place(x=320,y=10)
+
+    txtChat = ctk.CTkTextbox(frmChats, width=540, height=400, fg_color="transparent", border_width=3, border_color="#808080", corner_radius=10)
+    txtChat.grid(column=0, row=0,columnspan=2, pady=10, padx=10)
+
+    entMensagem = ctk.CTkEntry(frmChats, width=485, height = 40, fg_color="#d3d3d3", bg_color="transparent", corner_radius=10)
+    entMensagem.grid(column=0, row=1, pady=10, padx=1) 
+
+    btnEnviar = ctk.CTkButton(frmChats, width=40, height=40, text="OK")
+    btnEnviar.grid(column=1, row=1)
+
+# Configurando Janela de Login
+jnlLogin = ctk.CTk()
+jnlLogin._set_appearance_mode("light")
 ctk.set_default_color_theme("green")
-janela.title("Rio Tietê")
-janela.geometry("900x600")
-janela.resizable(width=False, height=False)
+jnlLogin.title("Equipe de Inspeção - Rio Tietê")
+jnlLogin.geometry(CenterWindowToDisplay(jnlLogin, 400, 400, jnlLogin._get_window_scaling()))
+jnlLogin.resizable(width=False, height=False)
 
-#Tabview
-#tabview = ctk.CTkTabview(janela, width=400)
-#tabview.pack()
-#tabview.add("Servidor")
-#tabview.add("Cliente")
-#tabview.tab("Servidor").grid_columnconfigure(0, weight=1)
-#tabview.tab("Cliente").grid_columnconfigure(0, weight=1)
-#Adicionando elementos na tab
-#text = ctk.CTkLabel(tabview.tab("Servidor"), text="IP:\nPorta:")
-#text.pack()
+# Frame
+frmLogin = ctk.CTkFrame(jnlLogin, width=380, height=380, fg_color="transparent", border_width=3, border_color="teal", corner_radius=15).place(x=10, y=10)
 
-#Frames
-#frame1 = ctk.CTkFrame(janela, width=200, height=200, fg_color="green",bg_color="transparent" , border_width=10, border_color="teal", corner_radius=30).place(x=10, y=10)
-#frame2 = ctk.CTkFrame(janela, width=200, height=200).place(x=220, y=10)
-#frame3 = ctk.CTkFrame(janela, width=200, height=200).place(x=430, y=10)
+# Imagem SP
+imgGov = ctk.CTkImage(light_image=Image.open(".\img\gov-sp.png"), size=(300, 250))
+lblImgGov = ctk.CTkLabel(frmLogin, text=None, image=imgGov)
+lblImgGov.pack(side=ctk.TOP, pady=20)
 
-#TEXTBOX
-#textbox = ctk.CTkTextbox(janela, width=300, height=100, scrollbar_button_color="green", scrollbar_button_hover_color="teal", border_width=2, corner_radius=15,bg_color="black",border_color="green")
-#textbox.pack()
-#textbox.insert("0.0", "Valor:" + "Olá")
+# Label Usuário
+lblUsuario = ctk.CTkLabel(frmLogin, text="Usuário:")
+lblUsuario.place(x=55, y=260)
 
+# Entry Usuário
+txtUsuario = ctk.CTkEntry(frmLogin,
+                    width=300,
+                    placeholder_text=None,
+                    corner_radius=15)
+txtUsuario.pack(side=ctk.TOP)
 
-#DIALOG
-#def abrirDialog():
-    #dialog = ctk.CTkInputDialog(title="Dialog 1", text="Digite a #porta: ")
-    #print(dialog.get_input())
+# Botão Acessar
+btnAcessar = ctk.CTkButton(frmLogin, width=300, text="Acessar", command=acessar, corner_radius=15)
+btnAcessar.pack(pady=10)
+txtUsuario.focus()
 
 
-
-#btnDialog = ctk.CTkButton(janela, text="Abrir Dialog", command=abrirDialog)
-#btnDialog.pack()
-'''
-trechosctk = ctk.StringVar(value="Escolha")
-
-def trechos(escolha):
-    print(f"Trecho: {escolha}")
-
-label = ctk.CTkLabel(janela, text="Trechos:", font=("arial-bold", 20)).pack()
-
-trechos = ctk.CTkOptionMenu(janela, values=["Alto Tietê", "Médio Tietê", "Baixo Tietê", "Tietê Inferior"], variable=trechosctk, command=trechos)
-trechos.pack(pady=50)
-'''
-
-img = ctk.CTkImage(light_image=Image.open("./img/send.png"), dark_image=Image.open("./img/send.png"),size=(20, 20))
-
-def enviar():
-    t = entry.get()
-    label11.configure(text=str(t))
-    entry.delete(0, tkinter.END)
-    pass
-
-label11 = ctk.CTkLabel(janela,
-                       width=100,
-                       height=100,
-                       text_color="red",
-                       font=("arial bold", 20))
-
-label11.pack(pady=10)
-
-entry = ctk.CTkEntry(janela, 
-                    width=100,
-                    height=10,
-                    placeholder_text="DIGITE")
-entry.pack(pady=10)
-
-btn11 = ctk.CTkButton(janela, width=50, height=50, text="Enviar", command=enviar, image=img)
-btn11.pack(pady=50)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Criando nova janela
-#def novaTela():
-#    novaJanela = ctk.CTkToplevel(janela, fg_color="teal")
-#    novaJanela.geometry("200x200")
-
-
-# Criando botão para chamar nova janela
-#btnJanela = ctk.CTkButton(master=janela, text="Nova Janela", command=novaTela).place(x=300, y=300)
-
-janela.mainloop()  # Executando janela
+#Executando janela
+jnlLogin.mainloop()
