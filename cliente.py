@@ -40,35 +40,36 @@ def receber_mensagem(connection: socket.socket):
             connection.close()
             break
 
-def selecionar_arquivo():
-    root = tk.Tk()
-    root.withdraw()  # Oculta a janela principal
+# Em implementação:
+# def selecionar_arquivo():
+#     root = tk.Tk()
+#     root.withdraw()  # Oculta a janela principal
 
-    caminho_arquivo = filedialog.askopenfilename()
-    return caminho_arquivo
+#     caminho_arquivo = filedialog.askopenfilename()
+#     return caminho_arquivo
 
-def enviar_arquivo():
-    caminho_arquivo = selecionar_arquivo()
+# def enviar_arquivo():
+#     caminho_arquivo = selecionar_arquivo()
 
-    if caminho_arquivo:
-        with open(caminho_arquivo, "rb") as file:
-            arquivo_bytes = file.read()
-            payload = {
-                "comando": "/arquivo",
-                "nome_arquivo": os.path.basename(caminho_arquivo),
-                "conteudo_arquivo": arquivo_bytes
-            }
-            socket_instance.send(json.dumps(payload).encode())
-    else:
-        print("Nenhum arquivo selecionado.")
-        if os.path.exists(caminho_arquivo):
-            with open(caminho_arquivo, "rb") as file:
-                bytes_arquivo = file.read()
-                payload = {
-                    "tipo": tipo_arquivo,
-                    "nome": os.path.basename(caminho_arquivo),
-                    "conteudo_arquivo": bytes_arquivo
-                }
+#     if caminho_arquivo:
+#         with open(caminho_arquivo, "rb") as file:
+#             arquivo_bytes = file.read()
+#             payload = {
+#                 "comando": "/arquivo",
+#                 "nome_arquivo": os.path.basename(caminho_arquivo),
+#                 "conteudo_arquivo": arquivo_bytes
+#             }
+#             socket_instance.send(json.dumps(payload).encode())
+#     else:
+#         print("Nenhum arquivo selecionado.")
+#         if os.path.exists(caminho_arquivo):
+#             with open(caminho_arquivo, "rb") as file:
+#                 bytes_arquivo = file.read()
+#                 payload = {
+#                     "tipo": tipo_arquivo,
+#                     "nome": os.path.basename(caminho_arquivo),
+#                     "conteudo_arquivo": bytes_arquivo
+#                 }
 
 def conectar_servidor(op_servidor, usuario):
     global socket_instance
@@ -125,9 +126,9 @@ if op == 1:
             fechar_conexao()
             break
 
-        elif msg == 'arquivo':
-            selecionar_arquivo()
-            break
+        # elif msg == 'arquivo':
+        #     selecionar_arquivo()
+        #     break
 
         elif msg == '/trocar servidor':
             print("Trocando de servidor...")
